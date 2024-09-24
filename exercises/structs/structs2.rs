@@ -5,7 +5,6 @@
 // Execute `rustlings hint structs2` or use the `hint` watch subcommand for a
 // hint.
 
-
 #[derive(Debug)]
 struct Order {
     name: String,
@@ -40,8 +39,8 @@ mod tests {
         let your_order = Order {
             name: String::from("Hacker in Rust"),
             year: 2019,
-            mode_by_phone: false,
-            mode_bymobile: false,
+            made_by_phone: false,
+            made_by_mobile: false,
             made_by_email: true,
             item_number: 123,
             count: 1,
