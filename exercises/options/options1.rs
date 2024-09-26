@@ -13,7 +13,7 @@ fn maybe_icecream(time_of_day: u16) -> Option<u16> {
     // TODO: Complete the function body - remember to return an Option!
     if time_of_day < 22 {
         Some(5)
-    } else if time_of_day == 22 {
+    } else if time_of_day == 22 || time_of_day == 23 {
         Some(0)
     } else {
         None
@@ -38,6 +38,6 @@ mod tests {
         // TODO: Fix this test. How do you get at the value contained in the
         // Option?
         let icecreams = maybe_icecream(12);
-        assert_eq!(icecreams, 5);
+        assert_eq!(icecreams, Some(5));
     }
 }

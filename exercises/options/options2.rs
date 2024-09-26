@@ -33,8 +33,8 @@ mod tests {
         while let Some(integer) = optional_integers.pop() {
             if let Some(integer) = integer {
                 assert_eq!(integer, cursor);
+                cursor -= 1;
             }
-            cursor -= 1;
         }
 
         assert_eq!(cursor, 0);

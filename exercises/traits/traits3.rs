@@ -10,7 +10,7 @@
 
 pub trait Licensed {
     fn licensing_info(&self) -> String {
-        String::from(self.version_number)
+        "Some information".to_string()
     }
 }
 
