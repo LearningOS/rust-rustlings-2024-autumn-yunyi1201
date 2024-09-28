@@ -66,38 +66,31 @@ impl<T> LinkedList<T> {
         }
     }
     pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self {
-        // implement two list merge
-        let mut merged_list = LinkedList::new();
-        let mut current_a = list_a.start;
-        let mut current_b = list_b.start;
-
-        while let (Some(a), Some(b)) = (current_a, current_b) {
-            unsafe {
-                if (*a.as_ptr()).val <= (*b.as_ptr()).val {
-                    merged_list.add((*a.as_ptr()).val);
-                    current_a = (*a.as_ptr()).next;
-                } else {
-                    merged_list.add((*b.as_ptr()).val);
-                    current_b = (*b.as_ptr()).next;
-                }
+        let mut list_c = LinkedList::<T>::new();
+        let mut node_a = list_a.start;
+        let mut node_b = list_b.start;
+        while node_a.is_some() && node_b.is_some() {
+            let val_a = unsafe { node_a.unwrap().as_ref().val };
+            let val_b = unsafe { node_b.unwrap().as_ref().val };
+            if val_a < val_b {
+                list_c.add(val_a);
+                node_a = unsafe { node_a.unwrap().as_ref().next };
+            } else {
+                list_c.add(val_b);
+                node_b = unsafe { node_b.unwrap().as_ref().next };
             }
         }
-
-        while let Some(a) = current_a {
-            unsafe {
-                merged_list.add((*a.as_ptr()).val);
-                current_a = (*a.as_ptr()).next;
-            }
+        while node_a.is_some() {
+            let val_a = unsafe { node_a.unwrap().as_ref().val };
+            list_c.add(val_a);
+            node_a = unsafe { node_a.unwrap().as_ref().next };
         }
-
-        while let Some(b) = current_b {
-            unsafe {
-                merged_list.add((*b.as_ptr()).val);
-                current_b = (*b.as_ptr()).next;
-            }
+        while node_b.is_some() {
+            let val_b = unsafe { node_b.unwrap().as_ref().val };
+            list_c.add(val_b);
+            node_b = unsafe { node_b.unwrap().as_ref().next };
         }
-
-        merged_list
+        list_c
     }
 }
 
