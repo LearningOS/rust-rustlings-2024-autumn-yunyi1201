@@ -58,11 +58,11 @@ impl<T> LinkedList<T> {
         self.length += 1;
     }
 
-    pub fn get(&mut self, index: i32) -> Option<&T> {
+    pub fn get(&self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
     }
 
-    fn get_ith_node(&mut self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
+    fn get_ith_node(&self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
         match node {
             None => None,
             Some(next_ptr) => match index {
@@ -73,16 +73,22 @@ impl<T> LinkedList<T> {
     }
     pub fn reverse(&mut self) {
         // reverse the linked-list
-        let mut current = self.start;
-        let mut temp = None;
-        while let Some(mut current_node) = current {
+        let mut reversed_list = LinkedList::<T>::new();
+
+        let mut vec = vec![];
+        for i in 0..self.length as i32 {
             unsafe {
-                temp = (*current_node.as_ptr()).prev;
-                (*current_node.as_ptr()).prev = (*current_node.as_ptr()).next;
-                (*current_node.as_ptr()).next = temp;
-                current = (*current_node.as_ptr()).prev;
+                let item_p = self.get(i).unwrap();
+                let item = std::ptr::read(item_p as *const T);
+                vec.push(item);
             }
         }
+        vec.reverse();
+
+        for item in vec {
+            reversed_list.add(item);
+        }
+        *self = reversed_list;
     }
 }
 
