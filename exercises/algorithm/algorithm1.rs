@@ -4,7 +4,7 @@
 */
 
 use std::fmt::{self, Display, Formatter};
-use std::ptr::NonNull;
+use std::ptr::{self, NonNull};
 use std::vec::*;
 
 #[derive(Debug)]
@@ -52,11 +52,11 @@ impl<T> LinkedList<T> {
         self.length += 1;
     }
 
-    pub fn get(&mut self, index: i32) -> Option<&T> {
+    pub fn get(&self, index: i32) -> Option<&T> {
         self.get_ith_node(self.start, index)
     }
 
-    fn get_ith_node(&mut self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
+    fn get_ith_node(&self, node: Option<NonNull<Node<T>>>, index: i32) -> Option<&T> {
         match node {
             None => None,
             Some(next_ptr) => match index {
@@ -65,30 +65,37 @@ impl<T> LinkedList<T> {
             },
         }
     }
+}
+impl<T: Ord> LinkedList<T> {
     pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self {
+        let mut vec_a = Vec::new();
+        let mut vec_b = Vec::new();
+
         let mut list_c = LinkedList::<T>::new();
-        let mut node_a = list_a.start;
-        let mut node_b = list_b.start;
-        while node_a.is_some() && node_b.is_some() {
-            let val_a = unsafe { node_a.unwrap().as_ref().val };
-            let val_b = unsafe { node_b.unwrap().as_ref().val };
-            if val_a < val_b {
-                list_c.add(val_a);
-                node_a = unsafe { node_a.unwrap().as_ref().next };
-            } else {
-                list_c.add(val_b);
-                node_b = unsafe { node_b.unwrap().as_ref().next };
+
+        for i in 0..list_a.length {
+            let item = list_a.get(i as i32).unwrap();
+
+            unsafe {
+                let item = ptr::read(item as *const T);
+                vec_a.push(item);
             }
         }
-        while node_a.is_some() {
-            let val_a = unsafe { node_a.unwrap().as_ref().val };
-            list_c.add(val_a);
-            node_a = unsafe { node_a.unwrap().as_ref().next };
+
+        for i in 0..list_b.length {
+            let item = list_b.get(i as i32).unwrap();
+
+            unsafe {
+                let item = ptr::read(item as *const T);
+                vec_b.push(item);
+            }
         }
-        while node_b.is_some() {
-            let val_b = unsafe { node_b.unwrap().as_ref().val };
-            list_c.add(val_b);
-            node_b = unsafe { node_b.unwrap().as_ref().next };
+
+        vec_a.extend(vec_b.into_iter());
+        vec_a.sort();
+
+        for item in vec_a.into_iter() {
+            list_c.add(item);
         }
         list_c
     }
